@@ -381,30 +381,42 @@ def uniform_cost_search(grid_size, start, goal, obstacles, costFn, logger):
     # finish the code below
     # ----------------------------------------
 #############################################################################
+    cost_so_far = {}
+    cost_so_far[start] = 0
+    
     open_set.put(start, 0)
     while open_set:
-        current = open_set.pop()
-        # if current == goal:
-        #     return movement, closed_set
+        current, _ = open_set.pop()
+        if current in closed_set:
+            continue
         closed_set.add(current)
+
+        if current == goal:
+            break
+
         for action in ACTIONS:
-            row = current[0] + action[0]
-            col = current[1] + action[1]
+            row, col = current[0] + action[0], current[1] + action[1]
             neighbor = (row, col)
-            if (neighbor not in open_set and neighbor not in closed_set and
-                0 <= row < n_rows and 0 <= col < n_cols and neighbor not in obstacles):
-                cost = costFn(neighbor)
-                open_set.put(neighbor, cost)
-                parent[row][col] = current
-                actions[row][col] = action
-                movement.append(action)
-            elif neighbor in open_set:
-                cost = costFn(neighbor)
-                if cost < open_set.get(neighbor):
-                    open_set.put(neighbor, cost)
+
+            if (
+                0 <= row < n_rows and 0 <= col < n_cols and
+                neighbor not in obstacles
+            ):
+                new_cost = cost_so_far[current] + costFn(neighbor)
+                if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
+                    cost_so_far[neighbor] = new_cost
                     parent[row][col] = current
                     actions[row][col] = action
-                    movement.append(action)
+                    open_set.put(neighbor, new_cost)
+                    
+    cell = goal
+    while cell != start:
+        row, col = cell
+        action = actions[row][col]
+        if action is None:
+            return [], closed_set  # No path found
+        movement.insert(0, action)
+        cell = parent[row][col]
 #############################################################################
     return movement, closed_set
 
