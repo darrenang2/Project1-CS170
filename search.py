@@ -7,6 +7,8 @@
 # 
 # Authors: Pei Xu (peixu@stanford.edu) and Ioannis Karamouzas (ioannis@cs.ucr.edu)
 #
+# Edited by: Darren Ang (dang004@ucr.edu) and Joseph Caraan (jcara025@ucr.edu)
+#
 
 
 """
